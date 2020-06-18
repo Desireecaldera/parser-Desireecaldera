@@ -1,0 +1,9 @@
+firstVar = 100;
+print (firstVar);
+second2var = 0.15;
+print (second2var);
+repeat (2)
+    firstVar = firstVar + 1;
+print (+firstVar);
+repeat(10)
+    print (-101.725) ;
