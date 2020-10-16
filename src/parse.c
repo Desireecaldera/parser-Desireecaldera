@@ -6,7 +6,7 @@ TOKEN *getNextToken(TOKEN **token)
     freeToken(token);
     TOKEN* tok = scanner();
     // uncomment the line below if desired for debugging purposes.
-    //printToken(&tok); fflush(stdout);
+    printToken(&tok); fflush(stdout);
     return tok;
 }
 
@@ -65,6 +65,7 @@ NODE *statement()
 
 NODE *assignStmt(TOKEN **currToken)
 {
+    // <id> = <expr>;
     NODE *node = calloc(sizeof(NODE), 1);
     node->type = ASSIGN_STMT_NODE;
 
@@ -86,7 +87,7 @@ NODE *assignStmt(TOKEN **currToken)
     //currTok should be a semicol now
 
     if( (*currToken)->type !=SEMICOLON_TOKEN){
-        error( "Expected assigment token in assignment statement");
+        error( "Expected semicolon token in assignment statement");
 
     }
 
@@ -104,11 +105,6 @@ NODE *repeatStmt(TOKEN **currToken)
     node->type = REPEAT_STMT_NODE;
 
     *currToken = getNextToken( currToken );
-    if( (*currToken)->type != REPEAT_TOKEN ){
-        error( "Expected repeat keyword");
-    }
-
-    *currToken = getNextToken( currToken );
     if( (*currToken)->type != LPAREN_TOKEN ){
         error( "Expected left parenthesis");
     }
@@ -120,13 +116,9 @@ NODE *repeatStmt(TOKEN **currToken)
     if( (*currToken)->type != RPAREN_TOKEN ){
         error( "Expected right parenthesis");
     }
-
-    *currToken = getNextToken( currToken );
-    node->rightChild = statement();
-
-    //do i need to free here? yes because we do not pass into a function that frees it
-    //nor do we call getNextToken AGAIN to free currToken
     freeToken( currToken);
+
+    node->rightChild = statement();
 
     // TODO(done double check)
     return node;
@@ -139,11 +131,6 @@ NODE *printStmt(TOKEN **currToken)
     node->type = PRINT_STMT_NODE;
 
     *currToken = getNextToken( currToken );
-    if( (*currToken)->type != PRINT_TOKEN ){
-        error( "Expected repeat keyword");
-    }
-
-    *currToken = getNextToken( currToken );
     if( (*currToken)->type != LPAREN_TOKEN ){
         error( "Expected left parenthesis");
     }
@@ -153,7 +140,7 @@ NODE *printStmt(TOKEN **currToken)
 
     *currToken = getNextToken( currToken );
     if( (*currToken)->type != RPAREN_TOKEN ){
-        error( "Expected reft parenthesis");
+        error( "Expected right parenthesis");
     }
 
     *currToken = getNextToken( currToken );
@@ -175,7 +162,6 @@ NODE *expr(TOKEN **currToken)
     node->type = EXPR_NODE;
 
     //<term>
-    *currToken = getNextToken( currToken );
     node->leftChild = term( currToken );
 
     *currToken = getNextToken( currToken );
@@ -183,9 +169,9 @@ NODE *expr(TOKEN **currToken)
     //check for <addop>
     if( (*currToken)->type != ADD_OP_TOKEN ){
         ungetToken( currToken );
+
     } else{
-        //double check this one vvv
-        node->data.op =  *currToken;
+        node->data.op = (*currToken)->val.op;
 
         //<expr>
         *currToken = getNextToken( currToken );
@@ -205,7 +191,6 @@ NODE *term(TOKEN **currToken)
     node->type = TERM_NODE;
 
     //<factor>
-    *currToken = getNextToken( currToken );
     node->leftChild = factor( currToken );
 
     *currToken = getNextToken( currToken );
@@ -214,13 +199,12 @@ NODE *term(TOKEN **currToken)
     if( (*currToken)->type != MULT_OP_TOKEN ){
         ungetToken( currToken );
     } else{
-        node->data.op = *currToken;
+        node->data.op = (*currToken)->val.op;
 
         //<term>
         *currToken = getNextToken( currToken );
         node->rightChild = term( currToken );
     }
-
 
     // TODO(done double check)
     return node;
@@ -233,37 +217,38 @@ NODE *factor(TOKEN **currToken)
     node->type = FACTOR_NODE;
 
 
-    *currToken = getNextToken( currToken );
     //<id>
     if( (*currToken)->type == IDENT_TOKEN ){
         node->leftChild = ident( currToken );
 
         //<number>
-    } else if( (*currToken)->type == NO_TOKEN_TYPE ){
+    } else if( (*currToken)->type == INT_TOKEN || (*currToken)->type == FLOAT_TOKEN){
         node->leftChild = number( currToken);
 
         //<addop>
     } else if( (*currToken)->type == ADD_OP_TOKEN ){
-        node->data.op = *currToken;
+        node->data.op = (*currToken)->val.op;
 
         //<factor>
         *currToken = getNextToken( currToken );
-        node->rightChild = factor( currToken );
+        node->leftChild= factor( currToken );
 
 
         // (<expr>)
     }else if( (*currToken)->type == LPAREN_TOKEN ){
         node->leftChild = expr( currToken);
-
-        *currToken = getNextToken( currToken );
+        *currToken= getNextToken( currToken );
         if( (*currToken)->type != RPAREN_TOKEN ){
-            error( "Expected reft parenthesis");
+            error( "Expected a rparen token");
+
         }
         freeToken( currToken );
 
-    } else{
-        error( "Not a valid factor statement");
+          //check for RPAREN token here, error if not rparen
+    }else{
+        error( "No");
     }
+
 
 
     // TODO(done double check)
@@ -276,10 +261,14 @@ NODE *ident(TOKEN **currToken)
     NODE *node  = calloc( sizeof( NODE ), 1 );
     node->type = IDENT_NODE;
 
-    //we need to strcpy into ident
+        int strlength = strlen( (*currToken)->val.string );
+        node->data.identifier = malloc( strlength + 1 );
+        strcpy( node->data.identifier, (*currToken)->val.string );
 
-    // TODO
-    return NULL;
+        freeToken( currToken );
+
+    // TODO(done)
+    return node;
 }
 
 NODE *number(TOKEN **currToken)
@@ -288,17 +277,23 @@ NODE *number(TOKEN **currToken)
     NODE *node = calloc( sizeof( NODE ), 1 );
     node->type = NUMBER_NODE;
 
-    *currToken = getNextToken( currToken );
+    //*currToken = getNextToken( currToken );
     if( (*currToken)->type == INT_TOKEN ){
         node->data.number.type = INT_TYPE;
-        node->data.number.value.integral = strtol(*currToken, NULL, 10 );
+        node->data.number.value.integral = (*currToken)->val.integral;
     } else if ((*currToken)->type == FLOAT_TOKEN ){
         node->data.number.type = FLOAT_TYPE;
-        node->data.number.value.floating_point = strtod(*currToken, NULL);
+        node->data.number.value.floating_point = (*currToken)->val.floating_point;
     }
 
+    if( (*currToken)->type != INT_TOKEN && (*currToken)->type != FLOAT_TOKEN  ){
+        error( "Expected Int or Float");
+    }
+
+    freeToken( currToken );
+
     // TODO(done but double check)
-    return NULL;
+    return node;
 }
 
 void freeParseTree(NODE **node)
