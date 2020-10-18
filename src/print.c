@@ -112,10 +112,15 @@ void printExpr(NODE *node, int indent)
 void printTerm(NODE *node, int indent)
 {
     //<factor> | <factor> <multop> <term>
-
     printfIndented(indent, "START TERM" );
 
     printFactor( node->leftChild, indent + 1 );
+
+    if( node->rightChild != NULL ){
+        printfIndented(indent, "<MULTOP %c>",node->data.op);
+        printTerm(node->rightChild, indent+1);
+
+    }
 
     printfIndented(indent, "END TERM" );
     // TODO
