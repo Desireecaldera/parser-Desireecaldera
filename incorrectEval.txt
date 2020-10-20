@@ -1,0 +1,6 @@
+firstVar = 5;
+print (firstVar);
+second2var = 10;
+print (second2var);
+thirdvar = 10 * 2 /5;
+print(thirdvar);

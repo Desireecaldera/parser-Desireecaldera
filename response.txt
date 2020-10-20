@@ -1,0 +1,14 @@
+Even though ADDOP and MULTOP are placed accordingly to their precedence in the grammar,
+when it comes to placing the right most factors at the bottom of the tree the
+evaluator does not fully follow PEMDAS completely in a specific case.
+In incorrectEval.txt, when the parser processes the line
+
+thirdvar = 10 * 2 /5;
+
+the evaluator evaluates 2/5 first and then proceeds to * 10 and we get 0.
+The evaluator goes down the tree and sees that the * node has a right most child.
+Then when the evaluator encounters the / node, the evaluator solves this expression first
+and then moves up the tree where it encounters * 10 again.
+
+This is in contrast from evaluating the line from left to right which would correctly follow
+PEMDAS and we would get the correct answer which is 4.

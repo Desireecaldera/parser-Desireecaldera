@@ -60,7 +60,7 @@ void printAssignStmt(NODE *node, int indent)
     printfIndented(indent, "END ASSIGNMENT STATEMENT" );
 
 
-    // TODO
+    // TODO(done)
 }
 
 void printRepeatStmt(NODE *node, int indent)
@@ -74,7 +74,7 @@ void printRepeatStmt(NODE *node, int indent)
 
 
     printfIndented(indent, "END REPEAT STATEMENT" );
-    // TODO
+    // TODO(done)
 }
 
 void printPrintStmt(NODE *node, int indent)
@@ -106,7 +106,7 @@ void printExpr(NODE *node, int indent)
     printfIndented(indent, "END EXPRESSION" );
 
 
-    // TODO
+    // TODO(done)
 }
 
 void printTerm(NODE *node, int indent)
@@ -123,14 +123,14 @@ void printTerm(NODE *node, int indent)
     }
 
     printfIndented(indent, "END TERM" );
-    // TODO
+    // TODO(done)
 }
 
 void printFactor(NODE *node, int indent)
 {
     // <id> | <number> | <addop> <factor> | ( <expr> )
 
-    printfIndented(indent, "START FACTOR" );
+        printfIndented(indent, "START FACTOR" );
 
     if( node->leftChild != NULL ){
 
@@ -153,14 +153,13 @@ void printFactor(NODE *node, int indent)
            default:
                 printFactor( node->leftChild, indent + 1 );
 
-
         }
 
    }
 
     printfIndented(indent, "END FACTOR" );
 
-    // TODO
+    // TODO(done)
 }
 
 void printId(NODE *node, int indent)
@@ -169,7 +168,7 @@ void printId(NODE *node, int indent)
     printfIndented( indent + 1 , node->data.identifier );
     printfIndented(indent, "END IDENT" );
 
-    // TODO
+    // TODO(done)
 }
 
 void printNumber(NODE *node, int indent)

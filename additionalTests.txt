@@ -1,0 +1,26 @@
+firstVal = 10;
+secondVal = 2;
+fourthVal = 1.3;
+
+thirdVal = firstVal % 3;
+print( thirdVal );
+thirdVal = firstVal % secondVal;
+print( thirdVal );
+
+
+thirdVal = firstVal / 3;
+print( thirdVal );
+thirdVal = firstVal * 3;
+print( thirdVal );
+thirdVal = firstval * 3;
+print( thirdVal );
+
+
+fourthVal = secondVal + 1.3;
+print( fourthVal );
+firstVal = firstVal - secondVal;
+print( firstVal );
+
+firstVal = firstVal + secondVal * 4;
+print( firstVal );
+

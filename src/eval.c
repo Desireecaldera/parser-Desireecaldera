@@ -230,7 +230,7 @@ NUMBER evalSub(NUMBER op1, NUMBER op2)
         total.value.floating_point =  op1.value.floating_point - op2.value.floating_point;
     }
 
-    // TODO
+    // TODO(done)
     return total;
 
 }
@@ -253,7 +253,7 @@ NUMBER evalMult(NUMBER op1, NUMBER op2)
         total.value.floating_point =  op1.value.floating_point * op2.value.floating_point;
     }
 
-    // TODO
+    // TODO(done)
     return total;
 
 }
@@ -276,7 +276,7 @@ NUMBER evalDiv(NUMBER op1, NUMBER op2)
         total.value.floating_point =  floor( op1.value.floating_point / op2.value.floating_point );
     }
 
-    // TODO
+    // TODO(done)
     return total;
 
 }
@@ -300,7 +300,7 @@ NUMBER evalMod(NUMBER op1, NUMBER op2)
     }
 
 
-    // TODO
+    // TODO(done)
     return total;
 }
 

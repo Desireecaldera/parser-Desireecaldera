@@ -6,7 +6,7 @@ TOKEN *getNextToken(TOKEN **token)
     freeToken(token);
     TOKEN* tok = scanner();
     // uncomment the line below if desired for debugging purposes.
-    printToken(&tok); fflush(stdout);
+    //33printToken(&tok); fflush(stdout);
     return tok;
 }
 
@@ -120,7 +120,7 @@ NODE *repeatStmt(TOKEN **currToken)
 
     node->rightChild = statement();
 
-    // TODO(done double check)
+    // TODO(done)
     return node;
 }
 
@@ -151,7 +151,7 @@ NODE *printStmt(TOKEN **currToken)
 
     freeToken( currToken );
 
-    // TODO(done double check)
+    // TODO(done)
     return node;
 }
 
@@ -179,7 +179,7 @@ NODE *expr(TOKEN **currToken)
 
     }
 
-    // TODO(done double check)
+    // TODO(done)
     return node;
 }
 
@@ -206,7 +206,7 @@ NODE *term(TOKEN **currToken)
         node->rightChild = term( currToken );
     }
 
-    // TODO(done double check)
+    // TODO(done)
     return node;
 }
 
@@ -244,14 +244,13 @@ NODE *factor(TOKEN **currToken)
         }
         freeToken( currToken );
 
-          //check for RPAREN token here, error if not rparen
     }else{
-        error( "No");
+        error( "Incorrect Factor");
     }
 
 
 
-    // TODO(done double check)
+    // TODO(done)
     return node;
 }
 
@@ -277,7 +276,6 @@ NODE *number(TOKEN **currToken)
     NODE *node = calloc( sizeof( NODE ), 1 );
     node->type = NUMBER_NODE;
 
-    //*currToken = getNextToken( currToken );
     if( (*currToken)->type == INT_TOKEN ){
         node->data.number.type = INT_TYPE;
         node->data.number.value.integral = (*currToken)->val.integral;
@@ -292,7 +290,7 @@ NODE *number(TOKEN **currToken)
 
     freeToken( currToken );
 
-    // TODO(done but double check)
+    // TODO(done)
     return node;
 }
 
